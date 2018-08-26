@@ -1,0 +1,18 @@
+version: "2"
+services:
+
+  app:
+    build: ./app
+    links:
+      - storage
+    ports:
+      - "5000:5000"
+
+  storage:
+    image: postgres:9.6.10
+    ports:
+      - "32000:5432"
+    environment:
+      POSTGRES_PASSWORD: 12345
+    volumes:
+      - ./storage:/docker-entrypoint-initdb.d/:ro
