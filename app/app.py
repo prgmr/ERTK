@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/bin/env python3
 
 import postgresql
 import flask
@@ -7,15 +7,15 @@ import json
 app = flask.Flask(__name__)
 
 # disables JSON pretty-printing in flask.jsonify
-# app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
-
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
+app.config['JSON_AS_ASCII'] = False
 
 def db_conn():
     return postgresql.open('pq://postgres:12345@storage/ertk')
 
 
 def to_json(data):
-    return json.dumps(data) + "\n"
+    return json.dumps(data, ensure_ascii=False) + "\n"
 
 
 def resp(code, data):
