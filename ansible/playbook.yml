@@ -8,35 +8,37 @@
   tasks:
   - name: Build App Image
     docker_image:
-    path: ./app
-    name: app
-    tag: latest
+      path: ../app
+      name: ertk_app
+      tag: latest
 
   - name: Build nginx Image
     docker_image:
-    path: ./nginx
-    name: nginx
-    tag: latest
+      path: ../nginx
+      name: ertk_nginx
+      tag: latest
 
   - name: Create storage container
     docker_container:
-    name: storage
-    image: postgres:9.6.10
-    volumes:
-      - ./storage:/docker-entrypoint-initdb.d/:ro
+      name: ertk_storage
+      image: postgres:9.6.10
+      volumes:
+        - ../storage:/docker-entrypoint-initdb.d/:ro
 
   - name: Create App Container
     docker_container:
-    name: app
-    image: app
-    links:
-      - storage
+      name: ertk_app
+      image: ertk_app
+      links:
+        - storage
+      privileged: true
 
   - name: Create nginx Container
     docker_container:
-    name: nginx
-    image: nginx
-    ports:
-      - "80:80"
-    links:
-      - app
+      name: ertk_nginx
+      image: ertk_nginx
+      ports:
+        - "80:80"
+      links:
+        - app
+      privileged: true
