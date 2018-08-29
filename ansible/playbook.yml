@@ -1,0 +1,42 @@
+---
+
+- name: Build and start containers
+  hosts: localhost
+  connection: local
+  remote_user: root
+
+  tasks:
+  - name: Build App Image
+    docker_image:
+    path: ./app
+    name: app
+    tag: latest
+
+  - name: Build nginx Image
+    docker_image:
+    path: ./nginx
+    name: nginx
+    tag: latest
+
+  - name: Create storage container
+    docker_container:
+    name: storage
+    image: postgres:9.6.10
+    volumes:
+      - ./storage:/docker-entrypoint-initdb.d/:ro
+
+  - name: Create App Container
+    docker_container:
+    name: app
+    image: app
+    links:
+      - storage
+
+  - name: Create nginx Container
+    docker_container:
+    name: nginx
+    image: nginx
+    ports:
+      - "80:80"
+    links:
+      - app
