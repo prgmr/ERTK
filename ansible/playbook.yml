@@ -20,24 +20,24 @@
       update_cache: yes
       when: ansible_os_family == 'Debian'
 
-  - name: Build App Image
+  - name: Build APP Image
     docker_image:
       path: ../app
       name: ertk_app
       tag: latest
 
-  - name: Build nginx Image
+  - name: Build NGINX Image
     docker_image:
       path: ../nginx
       name: ertk_nginx
       tag: latest
 
-  - name: Create Storage Container
+  - name: Create STORAGE container
     docker_container:
       name: storage
       image: postgres
 
-  - name: APP
+  - name: Create APP container
     docker_container:
       name: "ertk_app{{ item }}"
       recreate: yes
@@ -45,7 +45,7 @@
       command: sleep 1d
     with_sequence: count=4
 
-  - name: Create nginx Container
+  - name: Create NGINX container
     docker_container:
       name: ertk_nginx
       image: ertk_nginx
