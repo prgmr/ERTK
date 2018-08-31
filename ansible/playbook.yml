@@ -6,6 +6,20 @@
   remote_user: root
 
   tasks:
+
+  - name: Install python-docker on Red Hat based distribution
+    yum:
+      name: python-docker
+      enablerepo: extras
+      state: latest
+      when: ansible_os_family == 'RedHat'
+
+  - name: Install python-docker  on Debian based distribution
+    apt:
+      name: python-docker
+      update_cache: yes
+      when: ansible_os_family == 'Debian'
+
   - name: Build App Image
     docker_image:
       path: ../app
@@ -18,14 +32,15 @@
       name: ertk_nginx
       tag: latest
 
-  - name: Create storage container
+  - name: Storage Container
     docker_container:
-      name: ertk_storage
-      image: postgres:9.6.10
+      name: storage
+      image: postgres
       volumes:
-        - ../storage:/docker-entrypoint-initdb.d/:ro
+        - ./storage:/docker-entrypoint-initdb.d/:ro
+      privileged: true
 
-  - name: Create App Container
+  - name: App Container
     docker_container:
       name: ertk_app
       image: ertk_app
@@ -42,3 +57,8 @@
       links:
         - app
       privileged: true
+
+  - name: check container status
+    command: docker ps
+    register: result
+
