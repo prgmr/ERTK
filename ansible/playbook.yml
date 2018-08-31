@@ -32,21 +32,18 @@
       name: ertk_nginx
       tag: latest
 
-  - name: Storage Container
+  - name: Create Storage Container
     docker_container:
       name: storage
       image: postgres
-      volumes:
-        - ./storage:/docker-entrypoint-initdb.d/:ro
-      privileged: true
 
-  - name: App Container
+  - name: APP
     docker_container:
-      name: ertk_app
+      name: "ertk_app{{ item }}"
+      recreate: yes
       image: ertk_app
-      links:
-        - storage
-      privileged: true
+      command: sleep 1d
+    with_sequence: count=4
 
   - name: Create nginx Container
     docker_container:
