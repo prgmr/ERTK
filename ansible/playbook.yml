@@ -3,7 +3,7 @@
 - name: Build and start containers
   hosts: localhost
   connection: local
-  remote_user: root
+  become: yes
 
   tasks:
 
@@ -11,14 +11,14 @@
     yum:
       name: python-docker
       enablerepo: extras
-      state: latest
-      when: ansible_os_family == 'RedHat'
+      state: present
+    when: ansible_os_family == "RedHat"
 
   - name: Install python-docker  on Debian based distribution
     apt:
       name: python-docker
       update_cache: yes
-      when: ansible_os_family == 'Debian'
+    when: ansible_os_family == "Debian"
 
   - name: Build APP Image
     docker_image:
@@ -32,17 +32,29 @@
       name: ertk_nginx
       tag: latest
 
+  - name: Create network
+    docker_network:
+      name: ertk_network
+
   - name: Create STORAGE container
     docker_container:
-      name: storage
-      image: postgres
+      name: ertk_storage
+      image: postgres:9.6.10
+      networks:
+        - name: ertk_network
+      env:
+        POSTGRES_PASSWORD: 12345
+      volumes:
+        - ../storage/:/docker-entrypoint-initdb.d/:ro
 
   - name: Create APP container
     docker_container:
       name: "ertk_app{{ item }}"
       recreate: yes
       image: ertk_app
-      command: sleep 1d
+      command: python app.py
+      networks:
+        - name: ertk_network
     with_sequence: count=4
 
   - name: Create NGINX container
@@ -50,12 +62,13 @@
       name: ertk_nginx
       image: ertk_nginx
       ports:
-        - "80:80"
-      links:
-        - app
-      privileged: true
+        - 80:80
+      networks:
+        - name: ertk_network
 
   - name: check container status
     command: docker ps
     register: result
 
+  - debug:
+      var: result.stdout

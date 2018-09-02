@@ -11,7 +11,7 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 app.config['JSON_AS_ASCII'] = False
 
 def db_conn():
-    return postgresql.open('pq://postgres:12345@storage/ertk')
+    return postgresql.open('pq://postgres:12345@ertk_storage/ertk')
 
 
 def to_json(data):
