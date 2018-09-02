@@ -6,9 +6,11 @@ http {
     sendfile on;
 
     upstream app_servers {
-    {% for i in range({{app_servers_count}}) %}
-    server ertk_app{{i}}:5000;
+
+    {% for i in range( {{ app_servers_count }} ) %}
+    server ertk_app {{ i }} :5000;
     {% endfor %}
+
     }
 
     server {

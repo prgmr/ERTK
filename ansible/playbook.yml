@@ -29,13 +29,6 @@
       name: ertk_app
       tag: latest
 
-  - name: Generate NGINX config
-    template:
-      src=../nginx/templates/nginx.conf.j2
-      dest=../nginx/nginx.conf
-      mode=0644
-    with_items: "{{ app_servers_count }}"
-
   - name: Build NGINX Image
     docker_image:
       path: ../nginx
