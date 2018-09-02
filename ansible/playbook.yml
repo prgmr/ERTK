@@ -5,6 +5,10 @@
   connection: local
   become: yes
 
+  vars:
+    app_servers_count: 10
+
+
   tasks:
 
   - name: Install python-docker on Red Hat based distribution
@@ -55,7 +59,7 @@
       command: python app.py
       networks:
         - name: ertk_network
-    with_sequence: count=4
+    with_sequence: count={{ app_servers_count }}
 
   - name: Create NGINX container
     docker_container:
