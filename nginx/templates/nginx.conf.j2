@@ -6,11 +6,9 @@ http {
     sendfile on;
 
     upstream app_servers {
-
-    {% for i in range( {{ app_servers_count }} ) %}
-    server ertk_app {{ i }} :5000;
+    {% for i in range(1, app_servers_count + 1 ) %}
+    server ertk_app{{ i }}:5000;
     {% endfor %}
-
     }
 
     server {
@@ -25,4 +23,3 @@ http {
             proxy_set_header   X-Forwarded-Host $server_name;
         }
     }
-

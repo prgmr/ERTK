@@ -7,7 +7,7 @@ services:
       - storage
 
   nginx:
-    build: ./nginx
+    build: ./nginx/docker-compose
     links:
       - app
     ports:
@@ -18,4 +18,4 @@ services:
     environment:
       POSTGRES_PASSWORD: 12345
     volumes:
-      - ./storage:/docker-entrypoint-initdb.d/:ro
+      - ./storage:/docker-entrypoint-initdb.d/

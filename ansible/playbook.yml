@@ -6,7 +6,7 @@
   become: yes
 
   vars:
-    app_servers_count: 4
+    app_servers_count: 3
 
   tasks:
 
@@ -22,6 +22,11 @@
       name: python-docker
       update_cache: yes
     when: ansible_os_family == "Debian"
+
+  - name: Generate NGINX config
+    template:
+      src=../nginx/templates/nginx.conf.j2
+      dest=../nginx/nginx.conf
 
   - name: Build APP Image
     docker_image:
@@ -48,7 +53,7 @@
       env:
         POSTGRES_PASSWORD: 12345
       volumes:
-        - ../storage/:/docker-entrypoint-initdb.d/:ro
+        - ../storage/:/docker-entrypoint-initdb.d/
 
   - name: Create APP container
     docker_container:
