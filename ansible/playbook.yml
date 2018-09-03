@@ -23,21 +23,10 @@
       update_cache: yes
     when: ansible_os_family == "Debian"
 
-  - name: Generate NGINX config
-    template:
-      src=../nginx/templates/nginx.conf.j2
-      dest=../nginx/nginx.conf
-
   - name: Build APP Image
     docker_image:
       path: ../app
       name: ertk_app
-      tag: latest
-
-  - name: Build NGINX Image
-    docker_image:
-      path: ../nginx
-      name: ertk_nginx
       tag: latest
 
   - name: Create network
@@ -64,6 +53,17 @@
       networks:
         - name: ertk_network
     with_sequence: count={{ app_servers_count }}
+
+  - name: Generate NGINX config
+    template:
+      src=../nginx/templates/nginx.conf.j2
+      dest=../nginx/nginx.conf
+
+  - name: Build NGINX Image
+    docker_image:
+      path: ../nginx
+      name: ertk_nginx
+      tag: latest
 
   - name: Create NGINX container
     docker_container:
