@@ -7,30 +7,6 @@ REST API интерфейс.
 Запускать так: 
 ansible-playbook ansible/playbook.yml
 
-Структура проекта:
-`
-ERTK
-├── ansible
-│   └── playbook.yml
-├── app
-│   ├── app.py
-│   ├── Dockerfile
-│   └── requirements.txt
-├── docker-compose.yml
-├── nginx
-│   ├── docker-compose
-│   │   ├── Dockerfile
-│   │   └── nginx.conf
-│   ├── Dockerfile
-│   ├── nginx.conf
-│   └── templates
-│       └── nginx.conf.j2
-├── README.md
-├── storage
-│   └── pg_ertk_db_movies.sql
-└── vagrant
-    └── Vagrantfile
-`
 
 Запросы для тестирования интерфейса.
 curl -XGET 'localhost/api/1.0/movies' - получить список всех фильмов
