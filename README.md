@@ -8,6 +8,7 @@ REST API интерфейс.
 ansible-playbook ansible/playbook.yml
 
 Структура проекта:
+`
 ERTK
 ├── ansible
 │   └── playbook.yml
@@ -29,7 +30,7 @@ ERTK
 │   └── pg_ertk_db_movies.sql
 └── vagrant
     └── Vagrantfile
-
+`
 
 Запросы для тестирования интерфейса.
 curl -XGET 'localhost/api/1.0/movies' - получить список всех фильмов
