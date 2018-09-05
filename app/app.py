@@ -81,6 +81,16 @@ def get_movies():
         return resp(200, {"movies": movies})
 
 
+@app.route('/api/1.0/movies/<int:movie_id>', methods=['GET'])
+def get_movie(movie_id):
+    with db_conn() as db:
+        tuples = db.query("SELECT id, title, description, actors FROM movies WHERE id = " + str(movie_id))
+        movie = []
+        for (id, title, description, actors) in tuples:
+            movie.append({"id": id, "title": title, "description": description, "actors": actors})
+        return resp(200, {"movies": movie})
+
+
 @app.route('/api/1.0/movies', methods=['POST'])
 def post_movie():
     (json, errors) = movie_validate()
