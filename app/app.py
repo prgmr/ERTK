@@ -88,6 +88,9 @@ def get_movie(movie_id):
         movie = []
         for (id, title, description, actors) in tuples:
             movie.append({"id": id, "title": title, "description": description, "actors": actors})
+        views = db.query("SELECT views FROM movies WHERE id = " + str(movie_id))[0][0]
+        update = db.prepare("UPDATE movies SET views = views + 1 WHERE id = $1")
+        (_, cnt) = update(movie_id)
         return resp(200, {"movies": movie})
 
 
