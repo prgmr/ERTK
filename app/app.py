@@ -74,20 +74,20 @@ def page_not_found(e):
 @app.route('/api/1.0/movies', methods=['GET'])
 def get_movies():
     with db_conn() as db:
-        tuples = db.query("SELECT id, title, description, actors FROM movies")
+        tuples = db.query("SELECT id, title, description, actors, views FROM movies")
         movies = []
-        for (id, title, description, actors) in tuples:
-            movies.append({"id": id, "title": title, "description": description, "actors": actors})
+        for (id, title, description, actors, views) in tuples:
+            movies.append({"id": id, "title": title, "description": description, "actors": actors, "views": views})
         return resp(200, {"movies": movies})
 
 
 @app.route('/api/1.0/movies/<int:movie_id>', methods=['GET'])
 def get_movie(movie_id):
     with db_conn() as db:
-        tuples = db.query("SELECT id, title, description, actors FROM movies WHERE id = " + str(movie_id))
+        tuples = db.query("SELECT id, title, description, actors, views FROM movies WHERE id = " + str(movie_id))
         movie = []
-        for (id, title, description, actors) in tuples:
-            movie.append({"id": id, "title": title, "description": description, "actors": actors})
+        for (id, title, description, actors, views) in tuples:
+            movie.append({"id": id, "title": title, "description": description, "actors": actors, "views": views})
         views = db.query("SELECT views FROM movies WHERE id = " + str(movie_id))[0][0]
         update = db.prepare("UPDATE movies SET views = views + 1 WHERE id = $1")
         (_, cnt) = update(movie_id)
@@ -102,7 +102,7 @@ def post_movie():
 
     with db_conn() as db:
         insert = db.prepare(
-            "INSERT INTO movies (title, description, actors) VALUES ($1, $2, $3) " +
+            "INSERT INTO movies (title, description, actors, views) VALUES ($1, $2, $3, 0) " +
             "RETURNING id")
         [(movie_id,)] = insert(json['title'], json['description'], json['actors'])
         return resp(200, {"movie_id": movie_id})
@@ -116,7 +116,7 @@ def put_movie(movie_id):
 
     with db_conn() as db:
         update = db.prepare(
-            "UPDATE movies SET title = $2, description = $3, actors = $4 WHERE id = $1")
+            "UPDATE movies SET title = $2, description = $3, actors = $4, views = 0 WHERE id = $1")
         (_, cnt) = update(movie_id, json['title'], json['description'], json['actors'])
         return resp(affected_num_to_code(cnt), {})
 
