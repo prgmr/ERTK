@@ -11,6 +11,7 @@ CREATE TABLE "public"."movies" (
     "title" text,
     "description" text,
     "actors" text,
+    "views" integer DEFAULT '0' NOT NULL,
     CONSTRAINT "movies_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 

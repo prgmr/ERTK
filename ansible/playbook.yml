@@ -37,8 +37,6 @@
     docker_container:
       name: ertk_storage
       image: postgres:9.6.10
-      cpu_quota: 2000
-      memory: 256m
       networks:
         - name: ertk_network
       env:
@@ -52,8 +50,6 @@
       recreate: yes
       image: ertk_app
       command: python app.py
-      cpu_quota: 1000
-      memory: 128m
       networks:
         - name: ertk_network
     with_sequence: count={{ app_servers_count }}
